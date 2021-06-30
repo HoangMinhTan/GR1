@@ -1,0 +1,182 @@
+{% extends "./base.html" %}
+{% block title %}Computer Vision{% endblock %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}?version=51" type="text/css">
+<script src="{% static 'js/script.js' %}" type="text/javascript"></script>
+
+
+<div class="container">
+
+    <div class="body-container-wrapper" style="padding-top: 20px;">
+        <div class="body-container">
+
+            <div class="page-center mg-b-50">
+                <h1 style="padding: 70px;">Object Counting</h1>
+                <i class="fa fa-cloud" aria-hidden="true"></i>
+
+                <h1>Upload Your <strong>Image</strong></h1>
+                <!--        <a class="upload " id="call-to-action" onclick="myFunction()"><span>Select Your Upload</span></a>-->
+
+                <h5></h5>
+                <form id="upload" method="post" action="{% url 'post:counting' %}" onsubmit="return validateForm()" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row row-sm mg-b-20">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="submit-file" name="image"
+                                onchange="funChange()">
+                            <label class="custom-file-label" for="customFile" id="status-file">Choose image</label>
+                        </div>
+                    </div>
+                    <div class="row row-sm mg-b-20">
+                        <p class="mg-b-10">Type Noise Select</p>
+                        <select class="form-control select2-no-search select2-hidden-accessible" name="noise">
+                            <option label="Choose one" data-select2-id="15"></option>
+                            <option value="1">Salt and pepper noise</option>
+                            <option value="2">Sinusoidal noise</option>
+                            <option value="3">Low exposure</option>
+                        </select>
+                        
+                    </div>
+                    <div class="row mg-b-20">
+                        <div class="col-4"></div>
+
+                        <button class="btn btn-primary btn-rounded btn-block col-4">Submit</button>
+                        <div class="col-4"></div>
+                    </div>
+                </form>
+
+            </div>
+
+            {% if data %}
+            <div class="row " style="margin-bottom: 5%;">
+                <div class="col-6 card card-dashboard-pageviews">
+                    <p><strong>Input: </strong></p>
+                    <img class="card" src="../media/images/input.jpg" alt="" style="width: 100%;">
+                </div>
+                <div class="col-6 card card-dashboard-pageviews">
+                    <p><strong>Output:</strong> Has {{count}} objects in this image</p>
+                    <img class="card" src="../media/images/ouput.jpg" alt="" style="width: 100%;">
+                </div>
+            </div>
+
+            <div style=" font-size: 16px">
+                <pre class="prettyprint notranslate prettyprinted">
+                    image = np.uint8(image)
+                    if choice == 3:
+                        lookUpTable = np.empty((1, 256), np.uint8)
+                        for i in range(256):
+                            lookUpTable[0, i] = np.clip(pow(i / 255.0, 0.01) * 255.0, 0, 255)
+                        image = cv2.LUT(image, lookUpTable)
+                
+                    image = cv2.medianBlur(image, 3, None)
+                    img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                
+                    thresh = cv2.adaptiveThreshold(img, 255.0, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 51, -20.0)
+                
+                </pre>
+                <div class="row " style="margin-bottom: 5%;">
+                    <div class="col-6 card card-dashboard-pageviews">
+                        <p><strong>Smooth: </strong></p>
+                        <img class="card" src="../media/images/step1.jpg" alt="" style="width: 100%;">
+                    </div>
+                    <div class="col-6 card card-dashboard-pageviews">
+                        <p><strong>Thresh:</strong></p>
+                        <img class="card" src="../media/images/step2.jpg" alt="" style="width: 100%;">
+                    </div>
+                </div>
+                <pre>
+                    distMap = cv2.distanceTransform(thresh, cv2.DIST_L2, 5)
+                    cv2.normalize(distMap, distMap, 0.0, 255.0, cv2.NORM_MINMAX)
+                    distMap = np.uint8(distMap)
+
+                    foreground = cv2.threshold(distMap, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)[1]
+                    foreground = cv2.erode(foreground, None, 3)
+                </pre>
+                <div class="row " style="margin-bottom: 5%;">
+                    <div class="col-6 card card-dashboard-pageviews">
+                        <p><strong>distMap: </strong></p>
+                        <img class="card" src="../media/images/step3.jpg" alt="" style="width: 100%;">
+                    </div>
+                    <div class="col-6 card card-dashboard-pageviews">
+                        <p><strong>foreground:</strong></p>
+                        <img class="card" src="../media/images/step4.jpg" alt="" style="width: 100%;">
+                    </div>
+                </div>
+                <pre>
+                    unknowZones = cv2.subtract(bgRice, foreground)
+                    ret, markers = cv2.connectedComponents(foreground, connectivity=8, ltype=cv2.CV_32S)
+                    markers = markers+1
+                    markers[unknowZones == 255] = 0
+                    # for m in np.unique(markers):
+                    #     print(markers[m])
+                    markers = cv2.watershed(image, markers)
+
+                    cnts = []
+                    for m in np.unique(markers):
+                            if m < 2:
+                                    continue
+                            mask = np.zeros(markers.shape, dtype="uint8")
+                            mask[markers == m] = 255
+                            c = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
+                            cnts.extend(c)
+
+                    for (i, c) in enumerate(cnts):
+                            ((x, y), r) = cv2.minEnclosingCircle(c)
+                            cv2.drawContours(image, [c], -1, (0, 0, 255), 1)
+                            cv2.putText(image, "{}".format(i+1), (int(x)-10, int(y)+10),
+                                                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (200, 50, 0), 2)
+
+                    return [image, (i+1)]
+                </pre>
+                <div class="row " style="margin-bottom: 5%;">
+                    <div class="col-6 card card-dashboard-pageviews">
+                        <p><strong>unknowZones: </strong></p>
+                        <img class="card" src="../media/images/step5.jpg" alt="" style="width: 100%;">
+                    </div>
+                    <div class="col-6 card card-dashboard-pageviews">
+                        <p><strong>Output:</strong></p>
+                        <img class="card" src="../media/images/ouput.jpg" alt="" style="width: 100%;">
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var btnSubmit = document.getElementById("submit-file")
+    var not = document.getElementById("status-file")
+
+    function myFunction() {
+        btnSubmit.click()
+    }
+
+    function funChange() {
+        fName = btnSubmit.files[0].name;
+        exFile = getFileExtension(fName);
+        if (exFile == 'jpg' || exFile == 'png' || exFile == 'jpeg' || exFile == 'JPG' || exFile == 'PNG' || exFile == 'JPEG') {
+            not.innerHTML = fName;
+        }
+        else {
+            alert("File must extension is jpg, png, jpeg")
+            btnSubmit.value = null;
+        }
+    }
+
+    function validateForm(){
+        if (btnSubmit.value){
+          return true;
+        }
+        else{
+          alert("File not selected");
+          return false;
+          }
+      }
+    function getFileExtension(filename) {
+        return filename.split('.').pop();
+    }
+
+</script>
+{% endblock %}

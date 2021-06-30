@@ -1,0 +1,128 @@
+{% extends "./base.html" %}
+{% block title %}Object Detect{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css">
+<script src="{% static 'js/script.js' %}" type="text/javascript"></script>
+
+
+<div class="container" >
+
+  <div class="body-container-wrapper" style="padding: 50px;">
+    <div class="body-container">
+      <div class="page-center">
+        <h1>Object Detect</h1>
+        <i class="fa fa-cloud" aria-hidden="true"></i>
+        <h1>Upload Your <strong>Image</strong></h1>
+        <div  style="width: 620px">
+          <div class="row text-center">
+            <a class="upload col-5" onclick="myFunction(1)" style="float = left;"><span>Select Image Template</span></a>
+            <div class="col-2"></div>
+            <a class="upload col-5" onclick="myFunction(2)" style="float = right;"><span>Select Image to Detect</span></a>
+          </div>
+        </div>
+
+         <br/>
+        <div style="width: 600px">
+          <div class="row text-center">
+            <div class="col-5">
+              <p  id="status-file-1" style="float: right">File is not selected</p>
+            </div>
+            <h5 class="col-2"></h5>
+            <div class="col-5">
+              <p  id="status-file-2" style="float: left">File is not selected</p>
+            </div>
+          </div>
+        </div>
+
+        <form id="upload" method="post" action="{% url 'post:objDt' %}" onsubmit="return validateForm()"  enctype="multipart/form-data" >
+          {% csrf_token %}
+          <input id="submit-file-1" type="file" name="image1"  class="upload-hidden"  onchange="funChange(1)">
+          <input id="submit-file-2" type="file" name="image2"  class="upload-hidden"  onchange="funChange(2)">
+
+          <div class="row">
+            <div class="col-4"></div>
+            <button class="btn btn-primary btn-rounded btn-block col-4">Submit</button>
+            <div class="col-4"></div>
+          </div>
+        </form>
+        
+      </div>
+      {% if data %}
+        <div class="row ">
+          <div class="col-4 card card-dashboard-pageviews">
+            <p>Input</p>
+            <img class="card" src="../media/images/image1.jpg" alt="" style="width: 100%;">
+          </div>
+          <div class="col-8 card card-dashboard-pageviews">
+            <p>Output</p>
+            <img class="card" src="../media/images/ouput.jpg" alt="" style="width: 100%;">
+          </div>
+        </div>
+        {% endif %}
+    </div>
+  </div>
+</div>
+<script>
+  var btnSubmit1 = document.getElementById("submit-file-1")
+  var btnSubmit2 = document.getElementById("submit-file-2")
+
+  var not1 = document.getElementById("status-file-1")
+  var not2 = document.getElementById("status-file-2")
+
+  function myFunction(j) {
+    if(j ==1){
+      btnSubmit1.click()
+    }
+    if(j == 2){
+      btnSubmit2.click()
+    }
+  }
+
+  function funChange(j) {
+
+    if(j ==1){
+      fName = btnSubmit1.files[0].name;
+    }
+    if(j == 2){
+      fName = btnSubmit2.files[0].name;
+    }
+    exFile = getFileExtension(fName);
+    if(exFile== 'jpg' || exFile== 'png' || exFile== 'jpeg' || exFile== 'JPG' || exFile== 'PNG' || exFile== 'JPEG'){
+      if(j ==1){
+        not1.innerHTML = 'File "' + fName + '" selected';
+      }
+      if(j == 2){
+        not2.innerHTML = 'File "' + fName + '" selected';
+      }
+
+    }
+    else{
+      if(j ==1){
+        not1.innerHTML ="File must extension is jpg, png, jpeg";
+        btnSubmit1.value = null;
+      }
+      if(j == 2){
+        not2.innerHTML ="File must extension is jpg, png, jpeg";
+        btnSubmit2.value = null;
+      }
+
+    }
+  }
+
+  function validateForm(){
+    if (btnSubmit1.value && btnSubmit2.value){
+      return true;
+    }
+    else{
+      alert("File not selected");
+      return false;
+      }
+  }
+
+  function getFileExtension(filename) {
+    return filename.split('.').pop();
+  }
+  
+</script>
+{% endblock %}

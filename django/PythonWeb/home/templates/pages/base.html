@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/">
+    <title>{% block title %}{% endblock %}</title>
+    <style>
+        html, body{
+            height: 100%;
+            background-color: #f6f6f6;
+            text-align:center;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+      <!-- Brand/logo -->
+      <a class="navbar-brand" href="/">
+        <img src="{% static 'image/logo.png' %}" alt="logo" style="width:40px;">
+      </a>
+
+      <!-- Links -->
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="object_counting">Object Counting</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="human_detect">Human Detect</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="face_detect">Face Detect</a>
+        </li>
+          <li class="nav-item">
+              <a href="image_matching" class="nav-link">Image Matching</a>
+          </li>
+      </ul>
+    </nav>
+
+    <div class="container-fluid">
+
+    {% block content %}
+
+    {% endblock %}
+    </div>
+
+
+
+
+</body>
+</html>

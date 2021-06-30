@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i|Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i');
+@-webkit-keyframes animation-rotate {
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@-moz-keyframes animation-rotate {
+  100% {
+    -moz-transform: rotate(360deg);
+  }
+}
+
+@-o-keyframes animation-rotate {
+  100% {
+    -o-transform: rotate(360deg);
+  }
+}
+
+@keyframes animation-rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  font-family: 'Raleway', sans-serif;
+  transform: translateX(0%);
+  height: 100%;
+  width: 100%;
+  transition: transform 0.2s linear;
+  user-select:none;
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -o-user-select:none;
+}
+body.file-process-open {
+  transform: translateX(-30%);
+  transition: transform 0.2s linear;
+}
+
+* {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+
+.header-container .page-center,
+.body-container .page-center,
+.footer-container .page-center {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 20px;
+  overflow: hidden;
+}
+
+.header-container-wrapper {
+  flex: 0 0 auto;
+}
+.body-container-wrapper {
+  flex: 1 0 auto;
+}
+
+.body-container-wrapper .page-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.body-container i.fa.fa-cloud {
+    font-size: 100px;
+    color: #2196f3;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.48);
+}
+
+
+.upload {
+  padding: 0;
+  /* background-color: #0050fd; */
+  background-image: 8121991;
+  background-image: -webkit-linear-gradient(#2a9fed 0%, #0050fd 100%);
+  background-image: -moz-linear-gradient(#2a9fed 0%, #0050fd 100%);
+  background-image: -o-linear-gradient(#2a9fed 0%, #0050fd 100%);
+  background-image: linear-gradient(#2a9fed 0%, #0050fd 100%);
+  -webkit-box-shadow: inset rgba(0, 0, 0, 0.2) 0 0 0 1px, rgba(52, 152, 219, 0.5) 0 0 5px;
+  -moz-box-shadow: inset rgba(0, 0, 0, 0.2) 0 0 0 1px, rgba(52, 152, 219, 0.5) 0 0 5px;
+  box-shadow: inset rgba(0, 0, 0, 0.2) 0 0 0 1px, rgba(52, 152, 219, 0.5) 0 0 5px;
+  -webkit-border-radius: 4px;
+  -webkit-background-clip: padding-box;
+  -moz-border-radius: 4px;
+  -moz-background-clip: padding;
+  border-radius: 4px;
+  background-clip: padding-box;
+  padding: 20px 20px;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+  font-family: Open Sans;
+}
+
+.upload span {
+  text-shadow: rgba(29, 111, 165, 0.9) 0 0 2px;
+}
+
+.upload span {
+
+  font:  13px Helvetica, Arial, sans-serif;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+
+.upload:hover {
+  background-color: #4aa3df;
+  background-image: 8121991;
+  background-image: -webkit-linear-gradient(#5faee3 0%, #3498db 100%);
+  background-image: -moz-linear-gradient(#5faee3 0%, #3498db 100%);
+  background-image: -o-linear-gradient(#5faee3 0%, #3498db 100%);
+  background-image: linear-gradient(#5faee3 0%, #3498db 100%);
+  -webkit-box-shadow: inset rgba(0, 0, 0, 0.2) 0 0 0 1px, rgba(74, 163, 223, 0.5) 0 0 5px;
+  -moz-box-shadow: inset rgba(0, 0, 0, 0.2) 0 0 0 1px, rgba(74, 163, 223, 0.5) 0 0 5px;
+  box-shadow: inset rgba(0, 0, 0, 0.2) 0 0 0 1px, rgba(74, 163, 223, 0.5) 0 0 5px;
+}
+
+.upload:hover span {
+  text-shadow: rgba(33, 125, 187, 0.9) 0 0 2px;
+}
+
+.upload:active {
+  background-color: #258cd1;
+  background-image: 8121991;
+  background-image: -webkit-linear-gradient(#258cd1 0%, #258cd1 100%);
+  background-image: -moz-linear-gradient(#258cd1 0%, #258cd1 100%);
+  background-image: -o-linear-gradient(#258cd1 0%, #258cd1 100%);
+  background-image: linear-gradient(#258cd1 0%, #258cd1 100%);
+}
+
+.upload-hidden {
+  visibility: hidden;
+}
